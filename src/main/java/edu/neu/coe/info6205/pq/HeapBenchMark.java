@@ -92,5 +92,4 @@ public class HeapBenchMark {
         double time = benchmark.run(true, 10);
         System.out.println(name + " time: " + time + " ms");
     }
-    
 }
