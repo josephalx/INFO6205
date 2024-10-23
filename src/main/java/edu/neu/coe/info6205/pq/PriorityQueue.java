@@ -93,6 +93,7 @@ public class PriorityQueue<K> implements Iterable<K> {
         this(n, 1, true, comparator, true);
     }
 
+
     /**
      * @return true if the current size is zero.
      */
@@ -180,7 +181,7 @@ public class PriorityQueue<K> implements Iterable<K> {
     /**
      * Exchange the values at indices i and j
      */
-    private void swap(int i, int j) {
+    protected void swap(int i, int j) {
         K tmp = binHeap[i];
         binHeap[i] = binHeap[j];
         binHeap[j] = tmp;
@@ -195,14 +196,14 @@ public class PriorityQueue<K> implements Iterable<K> {
      * @param j the higher index, numerically
      * @return true if the values are out of order.
      */
-    boolean unordered(int i, int j) {
+    protected boolean unordered(int i, int j) {
         return (comparator.compare(binHeap[i], binHeap[j]) > 0) ^ max;
     }
 
     /**
      * Get the index of the parent of the element at index k
      */
-    private int parent(int k) {
+    protected int parent(int k) {
         return (k + 1 - first) / 2 + first - 1;
     }
 
@@ -210,7 +211,7 @@ public class PriorityQueue<K> implements Iterable<K> {
      * Get the index of the first child of the element at index k.
      * The index of the second child will be one greater than the result.
      */
-    private int firstChild(int k) {
+    protected int firstChild(int k) {
         return (k + 1 - first) * 2 + first - 1;
     }
 
@@ -227,7 +228,9 @@ public class PriorityQueue<K> implements Iterable<K> {
     private boolean getMax() {
         return max;
     }
-
+    protected int getFirst() {
+        return first;
+    }
     private final boolean max;
     private final int first;
     private final Comparator<K> comparator;
