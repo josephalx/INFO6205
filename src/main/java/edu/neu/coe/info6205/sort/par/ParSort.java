@@ -9,32 +9,17 @@ import java.util.concurrent.CompletableFuture;
  */
 class ParSort {
 
-    public static int cutoff = 1000;
+    public static int cutoff = Integer.parseInt(System.getenv().getOrDefault("CUTOFF", "1000"));
 
     public static void sort(int[] array, int from, int to) {
-        if (to - from < cutoff) Arrays.sort(array, from, to);
+        if (to - from < cutoff) {
+            Arrays.sort(array, from, to);
+        }
         else {
             // FIXME next few lines should be removed from public repo.
             CompletableFuture<int[]> parsort1 = parsort(array, from, from + (to - from) / 2); // TO IMPLEMENT
             CompletableFuture<int[]> parsort2 = parsort(array, from + (to - from) / 2, to); // TO IMPLEMENT
-            CompletableFuture<int[]> parsort = parsort1.thenCombine(parsort2, (xs1, xs2) -> {
-                int[] result = new int[xs1.length + xs2.length];
-                // TO IMPLEMENT
-                int i = 0;
-                int j = 0;
-                for (int k = 0; k < result.length; k++) {
-                    if (i >= xs1.length) {
-                        result[k] = xs2[j++];
-                    } else if (j >= xs2.length) {
-                        result[k] = xs1[i++];
-                    } else if (xs2[j] < xs1[i]) {
-                        result[k] = xs2[j++];
-                    } else {
-                        result[k] = xs1[i++];
-                    }
-                }
-                return result;
-            });
+            CompletableFuture<int[]> parsort = parsort1.thenCombine(parsort2, ParSort::merge);
 
             parsort.whenComplete((result, throwable) -> System.arraycopy(result, 0, array, from, result.length));
 //            System.out.println("# threads: "+ ForkJoinPool.commonPool().getRunningThreadCount());
@@ -52,5 +37,31 @@ class ParSort {
                     return result;
                 }
         );
+    }
+
+    private static int[] merge(int[] left, int[] right) {
+        int[] result = new int[left.length + right.length];
+        int i = 0, j = 0, k = 0;
+
+        // Merge the elements from left and right arrays in sorted order
+        while (i < left.length && j < right.length) {
+            if (left[i] <= right[j]) {
+                result[k++] = left[i++];
+            } else {
+                result[k++] = right[j++];
+            }
+        }
+
+        // Copy any remaining elements from the left array
+        while (i < left.length) {
+            result[k++] = left[i++];
+        }
+
+        // Copy any remaining elements from the right array
+        while (j < right.length) {
+            result[k++] = right[j++];
+        }
+
+        return result;
     }
 }
