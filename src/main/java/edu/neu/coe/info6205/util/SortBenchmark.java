@@ -179,6 +179,10 @@ public class SortBenchmark {
                 runStringSortBenchmark(words, nWords, nRunsLinearithmic * 3, sorter, timeLoggersLinearithmic);
             }
         }
+        if (isConfigBenchmarkStringSorter("heapsort")) {
+            Helper<String> helper = HelperFactory.create("Heapsort", nWords, config);
+            runStringSortBenchmark(words, nWords, nRunsLinearithmic, new HeapSort<>(helper), timeLoggersLinearithmic);
+        }
 
         if (isConfigBenchmarkStringSorter("introsort") && nRunsLinearithmic > 0)
             try (SortWithHelper<String> sorter = new IntroSort<>(nWords, config)) {
