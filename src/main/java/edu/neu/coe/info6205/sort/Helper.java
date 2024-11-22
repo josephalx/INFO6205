@@ -60,9 +60,11 @@ public interface Helper<X> extends AutoCloseable, Comparator<X>, Instrument {
      * @param j  the index of the higher of the elements to be swapped.
      */
     default void swap(X[] xs, int i, int j) {
-        X x = xs[j];
-        xs[j] = xs[i];
-        xs[i] = x;
+        if (i != j) {
+            X temp = xs[i];
+            xs[i] = xs[j];
+            xs[j] = temp;
+        }
     }
 
     /**
